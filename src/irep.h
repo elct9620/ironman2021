@@ -1,5 +1,5 @@
 #ifndef _IRON_IREP_H_
-#define _IRON_IREO_H_
+#define _IRON_IREP_H_
 
 /**
  * mruby binary header

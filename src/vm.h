@@ -1,6 +1,9 @@
 #ifndef _IRON_VM_H_
 #define _IRON_VM_H_
 
+#include <stdint.h>
+#include "irep.h"
+
 // TODO: pass implement mrb_state
 #define mrb_run(irep) mrb_exec(irep_load(irep))
 

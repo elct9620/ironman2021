@@ -2,4 +2,5 @@
 
 int mrb_exec(const uint8_t* irep) {
   // TODO
+  return 0;
 }
