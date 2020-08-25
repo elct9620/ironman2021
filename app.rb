@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-1 + 1
+puts 10 + 10
