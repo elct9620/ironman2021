@@ -10,7 +10,7 @@ int mrb_exec(const uint8_t* data) {
   mrb_irep* irep = read_irep(src, &len);
   src += len;
 
-  LOG("DEBUG> locals: %d, regs: %d, ireps: %d\n", irep->nlocals, irep->nregs, irep->rlen);
+  LOG("DEBUG> locals: %d, regs: %d, ireps: %d\n", irep->nlocals, irep->nregs, irep->nirep);
 
   int error = 0;
 
