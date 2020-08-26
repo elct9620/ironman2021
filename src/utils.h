@@ -4,7 +4,13 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define CONCAT(a, b) a b
 #define LOG(...) printf(__VA_ARGS__)
+#ifndef DEBUG
+#define DEBUG_LOG(...)
+#else
+#define DEBUG_LOG(msg, ...) printf("[DEBUG] " msg "\n", ##__VA_ARGS__)
+#endif
 
 static inline uint32_t
 bin_to_uint32(const uint8_t *bin)
