@@ -28,6 +28,7 @@ int mrb_exec(const uint8_t* data) {
 
   while(!error) {
     uint8_t op = *src++;
+    LOG("DEBUG> OP = %d\n", op);
 
     switch(op) {
       case OP_NOP:
@@ -71,6 +72,12 @@ int mrb_exec(const uint8_t* data) {
         break;
       case OP_SEND:
         a = *src++; b = *src++; c = *src++;
+        LOG("DEBUG> a = %d, b = %d, c = %d\n", a, b, c);
+
+        const uint8_t* fn = irep_get(data, IREP_TYPE_SYMBOL, b);
+        // TODO: Check for magic number 2
+        LOG("DEBUG> method = \"%s\"\n", (const char*)(fn));
+
         // TODO: Always call "puts"
         printf("%d\n", ((int)(reg[a + 1])));
         break;

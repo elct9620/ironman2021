@@ -3,11 +3,6 @@
 #include "utils.h"
 #include "irep.h"
 
-static size_t skip_padding(const uint8_t* buf) {
-  const size_t align = sizeof(uint32_t);
-  return -(intptr_t)buf & (align - 1);
-}
-
 mrb_irep* read_irep(const uint8_t* src, uint8_t* len) {
   const uint8_t* bin = src;
 
@@ -34,4 +29,69 @@ mrb_irep* read_irep(const uint8_t* src, uint8_t* len) {
   *len = (uint8_t)(bin - src);
 
   return irep;
+}
+
+const uint8_t* irep_get(const uint8_t* p, int type, int n) {
+  // irep_header
+  p += sizeof(uint32_t); // Record Size
+  p += sizeof(uint16_t); // nlocals
+  p += sizeof(uint16_t); // nregs
+
+  int nirep = bin_to_uint16(p);
+  p += sizeof(uint16_t);
+
+  // Skip ISEQ
+  int codelen = bin_to_uint32(p);
+  p += sizeof(uint32_t);
+  p += skip_padding(p);
+  p += codelen;
+
+  // Find in POOL
+  {
+    int pool_len = bin_to_uint32(p);
+    p += sizeof(uint32_t);
+
+    if (type == IREP_TYPE_LITERAL) {
+      pool_len = n;
+
+      for(int i = 0; i < pool_len; i++) {
+        uint8_t type = *p;
+        p += sizeof(uint8_t);
+        uint16_t len = bin_to_uint16(p);
+        p += sizeof(uint16_t);
+        p += len + 1; // End with null byte
+      }
+
+      return p + 3; // Skip type and length
+    }
+  }
+
+  // Find in SYM
+  {
+    int sym_len = bin_to_uint32(p);
+    p += sizeof(uint32_t);
+    if (type == IREP_TYPE_SYMBOL) {
+      sym_len = n;
+      for (int i = 0; i < sym_len; i++) {
+        uint16_t len = bin_to_uint16(p);
+        p += sizeof(uint16_t);
+        p += len + 1; // End with null byte
+      }
+
+      return p + 2; // Skip length
+    }
+  }
+
+  // Find in IREP
+  {
+    if (type == IREP_TYPE_IREP) {
+      nirep = n;
+      for (int i = 0; i < nirep; i++) {
+        p = irep_get(p, IREP_TYPE_SKIP, 0);
+      }
+      return p;
+    }
+  }
+
+  return p;
 }
