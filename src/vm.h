@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include "iron.h"
 #include "irep.h"
 #include "opcode.h"
 
@@ -10,8 +11,8 @@
 #define NEXT break
 
 // TODO: pass implement mrb_state
-#define mrb_run(irep) mrb_exec(irep_load(irep))
+#define mrb_run(mrb, irep) mrb_exec(mrb, irep_load(irep))
 
-int mrb_exec(const uint8_t* irep);
+int mrb_exec(mrb_state* mrb, const uint8_t* irep);
 
 #endif

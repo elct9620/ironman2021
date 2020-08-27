@@ -3,7 +3,7 @@
 #include "utils.h"
 #include "opcode.h"
 
-int mrb_exec(const uint8_t* data) {
+int mrb_exec(mrb_state* mrb, const uint8_t* data) {
   const uint8_t* p = data;
   uint8_t len;
 
