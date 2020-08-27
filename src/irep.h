@@ -22,10 +22,15 @@
 #define SKIP4 p += sizeof(uint32_t)
 #define SKIP2 p += sizeof(uint16_t)
 #define IREP_PADDING() p += skip_padding(p)
-#define IREP_READ_SIZE() uint32_t size = bin_to_uint32(p); SKIP4
-#define IREP_READ_1(name) uint8_t name = *p; SKIP1
-#define IREP_READ_2(name) uint16_t name = bin_to_uint16(p); SKIP2
-#define IREP_READ_4(name) uint32_t name = bin_to_uint32(p); SKIP4
+#define IREP_SIZE() uint32_t size = bin_to_uint32(p); SKIP4
+/**
+ * B = 8bit
+ * S = 16bit
+ * W = 32bit
+ */
+#define IREP_READ_B(name) uint8_t name = *p; SKIP1
+#define IREP_READ_S(name) uint16_t name = bin_to_uint16(p); SKIP2
+#define IREP_READ_W(name) uint32_t name = bin_to_uint32(p); SKIP4
 
 typedef struct mrb_irep {
   uint16_t nlocals;

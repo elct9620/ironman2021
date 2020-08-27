@@ -8,16 +8,16 @@ mrb_irep* read_irep(const uint8_t* src, uint8_t* len) {
 
   mrb_irep* irep = (mrb_irep*)malloc(sizeof(mrb_irep));
 
-  IREP_READ_SIZE();
-  IREP_READ_2(nlocals);
-  IREP_READ_2(nregs);
-  IREP_READ_2(nirep);
+  IREP_SIZE();
+  IREP_READ_S(nlocals);
+  IREP_READ_S(nregs);
+  IREP_READ_S(nirep);
 
   irep->nlocals = nlocals;
   irep->nregs = nregs;
   irep->nirep = nirep;
 
-  IREP_READ_4(codelen);
+  IREP_READ_W(codelen);
   IREP_PADDING();
 
   *len = (uint8_t)(p - src);
@@ -27,27 +27,27 @@ mrb_irep* read_irep(const uint8_t* src, uint8_t* len) {
 
 const uint8_t* irep_get(const uint8_t* p, int type, int n) {
   // irep_header
-  IREP_READ_SIZE();
-  IREP_READ_2(nlocals);
-  IREP_READ_2(nregs);
-  IREP_READ_2(nirep);
+  IREP_SIZE();
+  IREP_READ_S(nlocals);
+  IREP_READ_S(nregs);
+  IREP_READ_S(nirep);
 
   // Skip ISEQ
-  IREP_READ_4(codelen);
+  IREP_READ_W(codelen);
   IREP_PADDING();
   p += codelen;
 
   // Find in POOL
   {
-    IREP_READ_4(npool);
+    IREP_READ_W(npool);
 
     if (type == IREP_TYPE_LITERAL) {
       npool = n;
     }
 
     for(int i = 0; i < npool; i++) {
-      IREP_READ_1(type);
-      IREP_READ_2(len);
+      IREP_READ_B(type);
+      IREP_READ_S(len);
       p += len + 1; // End with null byte
     }
 
@@ -58,14 +58,14 @@ const uint8_t* irep_get(const uint8_t* p, int type, int n) {
 
   // Find in SYM
   {
-    IREP_READ_4(nsym);
+    IREP_READ_W(nsym);
 
     if (type == IREP_TYPE_SYMBOL) {
       nsym = n;
     }
 
     for (int i = 0; i < nsym; i++) {
-      IREP_READ_2(len);
+      IREP_READ_S(len);
       p += len + 1; // End with null byte
     }
 
