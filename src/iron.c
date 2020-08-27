@@ -13,5 +13,6 @@ IRON_API void
 mrb_close(mrb_state* mrb) {
   if(!mrb) return;
 
+  free(mrb->regs);
   free(mrb);
 }

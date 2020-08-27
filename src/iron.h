@@ -5,6 +5,7 @@
 
 typedef struct mrb_state {
   int exc; /* exception */
+  intptr_t* regs;
 } mrb_state;
 
 mrb_state* mrb_open(void);

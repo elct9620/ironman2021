@@ -12,8 +12,7 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
 
   DEBUG_LOG("locals: %d, regs: %d, ireps: %d", irep->nlocals, irep->nregs, irep->nirep);
 
-  // TODO: Move register to mrb_state
-  intptr_t reg[irep->nregs - 1];
+  mrb->regs = (intptr_t*)malloc(sizeof(intptr_t) * (irep->nregs -  1));
 
   // Temp
   int32_t a = 0;
@@ -22,7 +21,7 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
   int opext = 0;
 
   // Initialize
-  reg[0] = 0;
+  mrb->regs[0] = 0;
 
   for(;;) {
     uint8_t insn = READ_B();
@@ -34,17 +33,17 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         NEXT;
       }
       CASE(OP_MOVE, BB) {
-        reg[a] = reg[b];
-        DEBUG_LOG("r[%d] = r[%d] : %ld", a, b, reg[b]);
+        mrb->regs[a] = mrb->regs[b];
+        DEBUG_LOG("r[%d] = r[%d] : %ld", a, b, mrb->regs[b]);
         NEXT;
       }
       CASE(OP_LOADI, BB) {
-        reg[a] = b;
+        mrb->regs[a] = b;
         DEBUG_LOG("r[%d] = %d", a, b);
         NEXT;
       }
       CASE(OP_LOADINEG, BB) {
-        reg[a] = -b;
+        mrb->regs[a] = -b;
         DEBUG_LOG("r[%d] = %d", a, b);
         NEXT;
       }
@@ -58,13 +57,13 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
       CASE(OP_LOADI_6, B) goto L_LOADI;
       CASE(OP_LOADI_7, B) {
       L_LOADI:
-        reg[a] = insn - OP_LOADI_0;
-        DEBUG_LOG("Load INT: %ld", reg[a]);
+        mrb->regs[a] = insn - OP_LOADI_0;
+        DEBUG_LOG("Load INT: %ld", mrb->regs[a]);
         NEXT;
       }
       CASE(OP_LOADSELF, B) {
-        reg[a] = reg[0];
-        DEBUG_LOG("r[%d] = self %ld", a, reg[a]);
+        mrb->regs[a] = mrb->regs[0];
+        DEBUG_LOG("r[%d] = self %ld", a, mrb->regs[a]);
         NEXT;
       }
       CASE(OP_SEND, BBB) {
@@ -73,7 +72,7 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         DEBUG_LOG("method = \"%s\"", (const char*)(fn));
 
         // TODO: Always call "puts"
-        printf("%d\n", ((int)(reg[a + 1])));
+        printf("%d\n", ((int)(mrb->regs[a + 1])));
         NEXT;
       }
       CASE(OP_BREAK, B) goto L_RETURN;
@@ -85,12 +84,12 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         NEXT;
       }
       CASE(OP_ADD, B) {
-        reg[a] += reg[a + 1];
+        mrb->regs[a] += mrb->regs[a + 1];
         DEBUG_LOG("r[%d] = r[%d] + r[%d]", a, a, a + 1);
         NEXT;
       }
       CASE(OP_ADDI, BB) {
-        reg[a] += b;
+        mrb->regs[a] += b;
         DEBUG_LOG("r[%d] = r[%d] + %d", a, a, b);
         NEXT;
       }
