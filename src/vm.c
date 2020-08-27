@@ -12,8 +12,6 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
 
   DEBUG_LOG("locals: %d, regs: %d, ireps: %d", irep->nlocals, irep->nregs, irep->nirep);
 
-  int error = 0;
-
   // TODO: Move register to mrb_state
   intptr_t reg[irep->nregs - 1];
 
@@ -102,10 +100,10 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
       }
       default:
         DEBUG_LOG("Unsupport OP Code: %d", insn);
-        error = 1;
+        mrb->exc = 1;
     }
 
-    if (error) break;
+    if (mrb->exc) break;
   }
 
   return 0;
