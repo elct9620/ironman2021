@@ -8,7 +8,7 @@ mrb_irep* read_irep(const uint8_t* src, uint8_t* len) {
 
   mrb_irep* irep = (mrb_irep*)malloc(sizeof(mrb_irep));
 
-  IREP_SIZE();
+  IREP_READ_SIZE();
   IREP_READ_S(nlocals);
   IREP_READ_S(nregs);
   IREP_READ_S(nirep);
@@ -17,8 +17,7 @@ mrb_irep* read_irep(const uint8_t* src, uint8_t* len) {
   irep->nregs = nregs;
   irep->nirep = nirep;
 
-  IREP_READ_W(codelen);
-  IREP_PADDING();
+  IREP_SKIP_ISEQ();
 
   *len = (uint8_t)(p - src);
 
@@ -26,20 +25,19 @@ mrb_irep* read_irep(const uint8_t* src, uint8_t* len) {
 }
 
 const uint8_t* irep_get(const uint8_t* p, int type, int n) {
-  // irep_header
-  IREP_SIZE();
+  IREP_READ_SIZE();
   IREP_READ_S(nlocals);
   IREP_READ_S(nregs);
   IREP_READ_S(nirep);
 
   // Skip ISEQ
-  IREP_READ_W(codelen);
+  IREP_READ_L(codelen);
   IREP_PADDING();
   p += codelen;
 
   // Find in POOL
   {
-    IREP_READ_W(npool);
+    IREP_READ_L(npool);
 
     if (type == IREP_TYPE_LITERAL) {
       npool = n;
@@ -58,7 +56,7 @@ const uint8_t* irep_get(const uint8_t* p, int type, int n) {
 
   // Find in SYM
   {
-    IREP_READ_W(nsym);
+    IREP_READ_L(nsym);
 
     if (type == IREP_TYPE_SYMBOL) {
       nsym = n;

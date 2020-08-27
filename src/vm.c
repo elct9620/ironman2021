@@ -4,11 +4,11 @@
 #include "opcode.h"
 
 int mrb_exec(const uint8_t* data) {
-  const uint8_t* src = data;
+  const uint8_t* p = data;
   uint8_t len;
 
-  mrb_irep* irep = read_irep(src, &len);
-  src += len;
+  mrb_irep* irep = read_irep(p, &len);
+  p += len;
 
   DEBUG_LOG("locals: %d, regs: %d, ireps: %d", irep->nlocals, irep->nregs, irep->nirep);
 
@@ -26,81 +26,86 @@ int mrb_exec(const uint8_t* data) {
   // Initialize
   reg[0] = 0;
 
-  while(!error) {
-    uint8_t op = *src++;
-    DEBUG_LOG("OP = %d", op);
+  for(;;) {
+    uint8_t insn = READ_B();
+    DEBUG_LOG("OP = %d", insn);
 
-    switch(op) {
-      case OP_NOP:
-        DEBUG_LOG("Nop");
-        break;
-      case OP_MOVE:
-        a = *src++;
-        b = *src++;
+    switch(insn) {
+      CASE(OP_NOP, Z) {
+        DEBUG_LOG("NOP");
+        NEXT;
+      }
+      CASE(OP_MOVE, BB) {
         reg[a] = reg[b];
         DEBUG_LOG("r[%d] = r[%d] : %ld", a, b, reg[b]);
-        break;
-      case OP_LOADI:
-      case OP_LOADINEG:
-        a = *src++; b = *src++;
-        // if (opext == 2) {
-        //   b = (b << 8) + *src++;
-        // }
-        if (op == OP_LOADINEG) {
-          b = -b;
-        }
+        NEXT;
+      }
+      CASE(OP_LOADI, BB) {
         reg[a] = b;
         DEBUG_LOG("r[%d] = %d", a, b);
-        break;
-      case OP_LOADI__1:
-      case OP_LOADI_0:
-      case OP_LOADI_1:
-      case OP_LOADI_2:
-      case OP_LOADI_3:
-      case OP_LOADI_4:
-      case OP_LOADI_5:
-      case OP_LOADI_6:
-      case OP_LOADI_7:
-        a = *src++;
-        reg[a] = op - OP_LOADI_0;
+        NEXT;
+      }
+      CASE(OP_LOADINEG, BB) {
+        reg[a] = -b;
+        DEBUG_LOG("r[%d] = %d", a, b);
+        NEXT;
+      }
+      CASE(OP_LOADI__1, B) goto L_LOADI;
+      CASE(OP_LOADI_0, B) goto L_LOADI;
+      CASE(OP_LOADI_1, B) goto L_LOADI;
+      CASE(OP_LOADI_2, B) goto L_LOADI;
+      CASE(OP_LOADI_3, B) goto L_LOADI;
+      CASE(OP_LOADI_4, B) goto L_LOADI;
+      CASE(OP_LOADI_5, B) goto L_LOADI;
+      CASE(OP_LOADI_6, B) goto L_LOADI;
+      CASE(OP_LOADI_7, B) {
+      L_LOADI:
+        reg[a] = insn - OP_LOADI_0;
         DEBUG_LOG("Load INT: %ld", reg[a]);
-        break;
-      case OP_LOADSELF:
-        a = *src++;
+        NEXT;
+      }
+      CASE(OP_LOADSELF, B) {
         reg[a] = reg[0];
         DEBUG_LOG("r[%d] = self %ld", a, reg[a]);
-        break;
-      case OP_SEND:
-        a = *src++; b = *src++; c = *src++;
+        NEXT;
+      }
+      CASE(OP_SEND, BBB) {
         DEBUG_LOG("a = %d, b = %d, c = %d", a, b, c);
-
-        const uint8_t* fn = irep_get(data, IREP_TYPE_SYMBOL, b);
-        // TODO: Check for magic number 2
+        const char* fn = (const char*)irep_get(data, IREP_TYPE_SYMBOL, b);
         DEBUG_LOG("method = \"%s\"", (const char*)(fn));
 
         // TODO: Always call "puts"
         printf("%d\n", ((int)(reg[a + 1])));
-        break;
-      case OP_RETURN:
-      case OP_RETURN_BLK:
-      case OP_BREAK:
-        a = *src++;
-        DEBUG_LOG("%s r[%d]", op == OP_RETURN ? "return" : "break", a);
-        return reg[a];
-      case OP_ADD:
-        a = *src++;
+        NEXT;
+      }
+      CASE(OP_BREAK, B) goto L_RETURN;
+      CASE(OP_RETURN_BLK, B) goto L_RETURN;
+      CASE(OP_RETURN, B)
+      {
+      L_RETURN:
+        DEBUG_LOG("%s r[%d]", insn == OP_RETURN ? "return" : "break", a);
+        NEXT;
+      }
+      CASE(OP_ADD, B) {
         reg[a] += reg[a + 1];
         DEBUG_LOG("r[%d] = r[%d] + r[%d]", a, a, a + 1);
-        break;
-      case OP_ADDI:
-        a = *src++; b = *src++;
+        NEXT;
+      }
+      CASE(OP_ADDI, BB) {
         reg[a] += b;
         DEBUG_LOG("r[%d] = r[%d] + %d", a, a, b);
-        break;
+        NEXT;
+      }
+      CASE(OP_STOP, Z) {
+        DEBUG_LOG("STOP");
+        return 0;
+      }
       default:
-        DEBUG_LOG("Unsupport OP Code: %d", op);
+        DEBUG_LOG("Unsupport OP Code: %d", insn);
         error = 1;
     }
+
+    if (error) break;
   }
 
   return 0;

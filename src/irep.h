@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "opcode.h"
+
 /**
  * mruby binary header
  *
@@ -18,19 +20,14 @@
 #define IREP_TYPE_SYMBOL  2
 #define IREP_TYPE_IREP    3
 
-#define SKIP1 p += sizeof(uint8_t)
-#define SKIP4 p += sizeof(uint32_t)
-#define SKIP2 p += sizeof(uint16_t)
 #define IREP_PADDING() p += skip_padding(p)
-#define IREP_SIZE() uint32_t size = bin_to_uint32(p); SKIP4
-/**
- * B = 8bit
- * S = 16bit
- * W = 32bit
- */
-#define IREP_READ_B(name) uint8_t name = *p; SKIP1
-#define IREP_READ_S(name) uint16_t name = bin_to_uint16(p); SKIP2
-#define IREP_READ_W(name) uint32_t name = bin_to_uint32(p); SKIP4
+#define IREP_READ_SIZE() READ_L()
+#define IREP_READ_B(name) uint8_t name = READ_B()
+#define IREP_READ_S(name) uint16_t name = READ_S()
+#define IREP_READ_L(name) uint32_t name = READ_L()
+
+#define IREP_SKIP_HEADER() READ_L(); READ_S(); READ_S(); READ_S()
+#define IREP_SKIP_ISEQ() READ_L(); IREP_PADDING()
 
 typedef struct mrb_irep {
   uint16_t nlocals;
