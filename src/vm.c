@@ -1,7 +1,10 @@
+#include <klib/khash.h>
+
 #include "vm.h"
 #include "irep.h"
 #include "utils.h"
 #include "opcode.h"
+#include "iron.h"
 
 int mrb_exec(mrb_state* mrb, const uint8_t* data) {
   const uint8_t* p = data;
@@ -72,7 +75,14 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         DEBUG_LOG("method = \"%s\"", (const char*)(fn));
 
         // TODO: Always call "puts"
-        printf("%d\n", ((int)(mrb->regs[a + 1])));
+        khiter_t key = kh_get(mt, mrb->mt, fn);
+        if (key == kh_end(mrb->mt)) {
+          printf("%d\n", ((int)(mrb->regs[a + 1])));
+        } else {
+          // TODO
+          mrb_func_t func = kh_value(mrb->mt, key);
+          func(mrb);
+        }
         NEXT;
       }
       CASE(OP_BREAK, B) goto L_RETURN;
