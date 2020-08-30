@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <klib/khash.h>
 
 #include "iron.h"
 

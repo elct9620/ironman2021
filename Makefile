@@ -12,7 +12,7 @@ endif
 all: run
 
 %.o: %.c src/app.c
-	$(CC) $(CFLAGS) -I include -c $< -o $@
+	$(CC) $(CFLAGS) -I include -I lib -c $< -o $@
 
 src/app.c: app.rb
 	mrbc -B app -o $@ $^
