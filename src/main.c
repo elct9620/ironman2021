@@ -8,8 +8,10 @@
 #include "iron.h"
 #include "vm.h"
 
-void mrb_puts(mrb_state* mrb) {
-  printf("Dynamic Method!\n");
+void mrb_puts(mrb_state* mrb, mrb_value self) {
+  if (self.tt == MRB_TT_FIXNUM) {
+    printf("%d\n", self.value.i);
+  }
 }
 
 int main(int argc, char** argv) {

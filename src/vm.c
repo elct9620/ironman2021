@@ -81,7 +81,11 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         } else {
           // TODO
           mrb_func_t func = kh_value(mrb->mt, key);
-          func(mrb);
+          mrb_value value = {
+            .value.i = mrb->regs[a + 1],
+            .tt = MRB_TT_FIXNUM
+          };
+          func(mrb, value);
         }
         NEXT;
       }
