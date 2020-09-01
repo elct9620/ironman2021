@@ -9,8 +9,8 @@
 #include "vm.h"
 
 void mrb_puts(mrb_state* mrb, mrb_value self) {
-  if (self.tt == MRB_TT_FIXNUM) {
-    printf("%d\n", self.value.i);
+  for(int i = 0; i < mrb->ci->argc; i++) {
+    printf("%d\n", mrb->ci->argv[i].value.i);
   }
 }
 

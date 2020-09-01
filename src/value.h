@@ -25,10 +25,17 @@ typedef struct mrb_value {
 } while(0)
 
 #define SET_NIL_VALUE(r) SET_VALUE(r, MRB_TT_FALSE, value.i, 0)
+#define SET_INT_VALUE(r, n) SET_VALUE(r, MRB_TT_FIXNUM, value.i, (n))
 
 IRON_INLINE mrb_value mrb_nil_value(void) {
   mrb_value v;
   SET_NIL_VALUE(v);
+  return v;
+}
+
+IRON_INLINE mrb_value mrb_fixnum_value(int i) {
+  mrb_value v;
+  SET_INT_VALUE(v, i);
   return v;
 }
 

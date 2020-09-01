@@ -83,7 +83,19 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
           mrb_func_t func = kh_value(mrb->mt, key);
           // TODO: Load current object
           mrb_value self = mrb_nil_value();
+          mrb_value argv[c];
+          for(int i = 1; i <= c; i++) {
+            argv[i - 1] = mrb_fixnum_value((int)(mrb->regs[a + i]));
+          }
+          mrb_callinfo ci = {
+            .argc = c,
+            .argv = argv
+          };
+          mrb->ci = &ci;
+
           func(mrb, self);
+
+          mrb->ci = NULL;
         }
         NEXT;
       }
