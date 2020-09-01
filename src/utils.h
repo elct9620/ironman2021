@@ -12,6 +12,8 @@
 #define DEBUG_LOG(msg, ...) printf("[DEBUG] " msg "\n", ##__VA_ARGS__)
 #endif
 
+#define IRON_INLINE static inline
+
 static inline uint32_t
 bin_to_uint32(const uint8_t *bin)
 {

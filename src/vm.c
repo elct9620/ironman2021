@@ -79,13 +79,11 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         if (key == kh_end(mrb->mt)) {
           printf("%d\n", ((int)(mrb->regs[a + 1])));
         } else {
-          // TODO
+          // TODO: Implement mrb_funcall
           mrb_func_t func = kh_value(mrb->mt, key);
-          mrb_value value = {
-            .value.i = mrb->regs[a + 1],
-            .tt = MRB_TT_FIXNUM
-          };
-          func(mrb, value);
+          // TODO: Load current object
+          mrb_value self = mrb_nil_value();
+          func(mrb, self);
         }
         NEXT;
       }
