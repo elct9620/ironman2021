@@ -9,7 +9,8 @@
 #include "vm.h"
 
 void mrb_puts(mrb_state* mrb, mrb_value self) {
-  for(int i = 0; i < mrb->ci->argc; i++) {
+  int argc = mrb_get_argc(mrb);
+  for(int i = 0; i < argc; i++) {
     printf("%d\n", mrb->ci->argv[i].value.i);
   }
 }
