@@ -10,8 +10,10 @@
 
 void mrb_puts(mrb_state* mrb, mrb_value self) {
   int argc = mrb_get_argc(mrb);
+  mrb_value* argv = mrb_get_argv(mrb);
+
   for(int i = 0; i < argc; i++) {
-    printf("%d\n", mrb->ci->argv[i].value.i);
+    printf("%d\n", argv[i].value.i);
   }
 }
 

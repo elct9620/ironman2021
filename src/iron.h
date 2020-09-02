@@ -31,5 +31,6 @@ KHASH_MAP_INIT_STR(mt, mrb_func_t)
 IRON_API void mrb_define_method(mrb_state* mrb, const char* name, mrb_func_t func);
 
 IRON_API int mrb_get_argc(mrb_state* mrb);
+IRON_API mrb_value* mrb_get_argv(mrb_state* mrb);
 
 #endif
