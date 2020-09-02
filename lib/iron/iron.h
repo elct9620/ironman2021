@@ -1,7 +1,7 @@
 #ifndef _IRON_H_
 #define _IRON_H_
 
-#include <klib/khash.h>
+#include <khash.h>
 
 #include "value.h"
 

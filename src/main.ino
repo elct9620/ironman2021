@@ -1,7 +1,3 @@
-/**
- * iron-ruby-vm
- */
-
 #include <stdio.h>
 
 #include "app.h"

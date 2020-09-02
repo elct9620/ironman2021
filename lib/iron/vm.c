@@ -1,4 +1,4 @@
-#include <klib/khash.h>
+#include <khash.h>
 
 #include "vm.h"
 #include "irep.h"
