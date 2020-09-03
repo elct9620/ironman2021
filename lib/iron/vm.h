@@ -13,6 +13,15 @@
 // TODO: pass implement mrb_state
 #define mrb_run(mrb, irep) mrb_exec(mrb, irep_load(irep))
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+IRON_API
 int mrb_exec(mrb_state* mrb, const uint8_t* irep);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

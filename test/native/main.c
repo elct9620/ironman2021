@@ -13,12 +13,9 @@ void mrb_puts(mrb_state* mrb, mrb_value self) {
   }
 }
 
-int main(int argc, char** argv) {
-
+int main() {
   mrb_state* mrb = mrb_open();
-  // Define Print
   mrb_define_method(mrb, "puts", mrb_puts);
-
   mrb_run(mrb, app);
   mrb_close(mrb);
 

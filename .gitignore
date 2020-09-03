@@ -1,3 +1,2 @@
-src/app.c
-bin/
 .pio/
+include/app.h

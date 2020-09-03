@@ -7,6 +7,10 @@
 
 #define IRON_API extern
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct mrb_callinfo {
   int argc;
   mrb_value* argv;
@@ -22,7 +26,8 @@ typedef struct mrb_state {
   mrb_callinfo* ci;
 } mrb_state;
 
-mrb_state* mrb_open(void);
+
+IRON_API mrb_state* mrb_open(void);
 IRON_API void mrb_close(mrb_state* mrb);
 
 typedef void (*mrb_func_t)(mrb_state* mrb, mrb_value value);
@@ -32,5 +37,9 @@ IRON_API void mrb_define_method(mrb_state* mrb, const char* name, mrb_func_t fun
 
 IRON_API int mrb_get_argc(mrb_state* mrb);
 IRON_API mrb_value* mrb_get_argv(mrb_state* mrb);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

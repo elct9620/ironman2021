@@ -1,0 +1,7 @@
+{
+  "name": "klib",
+  "build": {
+    "srcFilter": "-<.git/> -<.svn/> -<example/> -<examples/> -<test/> -<tests/>",
+    "libArchive": false
+  }
+}
