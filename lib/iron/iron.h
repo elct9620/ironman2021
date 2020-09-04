@@ -16,6 +16,8 @@ typedef struct mrb_callinfo {
   mrb_value* argv;
 } mrb_callinfo;
 
+typedef void (*debug_fn)(const char* msg);
+
 typedef struct mrb_state {
   int exc; /* exception */
   intptr_t* regs;

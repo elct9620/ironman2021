@@ -5,7 +5,10 @@
 
 IRON_API
 mrb_state* mrb_open(void) {
+  static const mrb_state mrb_state_zero = { 0 };
   mrb_state* mrb = (mrb_state*)malloc(sizeof(mrb_state));
+  // Ensure new memory is NULL
+  *mrb = mrb_state_zero;
 
   mrb->mt = kh_init(mt);
 

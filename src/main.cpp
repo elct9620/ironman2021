@@ -1,8 +1,4 @@
-#ifdef UNIT_TEST
-    #include "ArduinoFake.h"
-#else
-    #include "Arduino.h"
-#endif
+#include <Arduino.h>
 
 #include "app.h"
 #include "iron.h"
@@ -15,8 +11,7 @@ void mrb_puts(mrb_state* mrb, mrb_value self) {
   mrb_value* argv = mrb_get_argv(mrb);
 
   for(int i = 0; i < argc; i++) {
-    Serial.print(argv[i].value.i);
-    Serial.println();
+    Serial.println(argv[i].value.i);
   }
 }
 
@@ -32,4 +27,5 @@ void setup() {
 
 void loop() {
   mrb_run(mrb, app);
+  delay(5000);
 }
