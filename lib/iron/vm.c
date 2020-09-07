@@ -129,5 +129,7 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
     if (mrb->exc) break;
   }
 
+  free(irep);
+
   return 0;
 }
