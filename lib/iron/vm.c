@@ -22,6 +22,7 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
   int32_t b = 0;
   int32_t c = 0;
   int opext = 0;
+  const uint8_t* porg = p;
 
   // Initialize
   mrb->regs[0] = 0;
@@ -67,6 +68,25 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
       CASE(OP_LOADSELF, B) {
         mrb->regs[a] = mrb->regs[0];
         DEBUG_LOG("r[%d] = self %ld", a, mrb->regs[a]);
+        NEXT;
+      }
+      CASE(OP_JMP, S) {
+        p = porg + a;
+        DEBUG_LOG("jmp %d", b);
+        NEXT;
+      }
+      CASE(OP_JMPIF, BS) goto L_JMPNOT;
+      CASE(OP_JMPNOT, BS) {
+      L_JMPNOT:
+        if (insn == OP_JMPIF) {
+          DEBUG_LOG("jmp %d if r[%d] == %ld", b, a, mrb->regs[a]);
+        } else {
+          DEBUG_LOG("jmp %d if !r[%d] == %ld", b, a, mrb->regs[a]);
+        }
+
+        if ((insn == OP_JMPIF) == (mrb->regs[a] != MRB_NIL)) {
+          p = porg + b;
+        }
         NEXT;
       }
       CASE(OP_SEND, BBB) {
@@ -115,6 +135,11 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
       CASE(OP_ADDI, BB) {
         mrb->regs[a] += b;
         DEBUG_LOG("r[%d] = r[%d] + %d", a, a, b);
+        NEXT;
+      }
+      CASE(OP_GE, B) {
+        mrb->regs[a] = mrb->regs[a] >= mrb->regs[a + 1] ? MRB_TRUE : MRB_FALSE;
+        DEBUG_LOG("r[%d] = r[%d] >= r[%d+1]", a, a, a);
         NEXT;
       }
       CASE(OP_STOP, Z) {

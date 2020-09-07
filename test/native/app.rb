@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-print 1
-puts 10 + 10, 100
+a = 1 + 1
+puts a if a >= 0

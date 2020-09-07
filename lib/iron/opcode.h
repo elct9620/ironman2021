@@ -22,6 +22,8 @@
 #define FETCH_B() do { a = READ_B(); } while(0)
 #define FETCH_BB() do { a = READ_B(); b = READ_B(); } while(0)
 #define FETCH_BBB() do { a = READ_B(); b = READ_B(); c = READ_B(); } while(0)
+#define FETCH_BS() do { a = READ_B(); b = READ_S(); } while(0)
+#define FETCH_S() do { a = READ_S(); } while(0)
 
 /**
  * Implement mruby 2.1.2
@@ -56,12 +58,17 @@ enum {
   OP_LOADSELF,
   OP_LOADT,
   OP_LOADF,
+  OP_JMP = 33,
+  OP_JMPIF,
+  OP_JMPNOT,
+  OP_JMPNIL,
   OP_SEND = 46,
   OP_RETURN = 55,
   OP_RETURN_BLK,
   OP_BREAK,
   OP_ADD = 59,
   OP_ADDI,
+  OP_GE = 69,
   OP_STOP = 103,
 };
 
