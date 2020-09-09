@@ -174,6 +174,13 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         DEBUG_LOG("r[%d] = r[%d] >= r[%d+1]", a, a, a);
         NEXT;
       }
+      CASE(OP_STRING, BB) {
+        const uint8_t* lit = irep_get(data, IREP_TYPE_LITERAL, b);
+        int len = PEEK_B(lit - 1);
+        mrb->regs[a] = (intptr_t)lit;
+        DEBUG_LOG("r[%d] = str_dup(lit[%d] %s)", a, b, (const char*)mrb->regs[a]);
+        NEXT;
+      }
       CASE(OP_STOP, Z) {
         DEBUG_LOG("STOP");
         return 0;

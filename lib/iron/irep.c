@@ -46,7 +46,7 @@ const uint8_t* irep_get(const uint8_t* p, int type, int n) {
     for(int i = 0; i < npool; i++) {
       IREP_READ_B(type);
       IREP_READ_S(len);
-      p += len + 1; // End with null byte
+      p += len;
     }
 
     if (type == IREP_TYPE_LITERAL) {

@@ -73,6 +73,8 @@ enum {
   OP_LE,
   OP_GT,
   OP_GE,
+  OP_STRING = 79,
+  OP_STRCAT,
   OP_STOP = 103,
 };
 
