@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-a = 1 + 1
-unless a == 0
-  puts a
+i = 0
+while true
+  puts i
+  i += 1
+  break if i >= 5
 end

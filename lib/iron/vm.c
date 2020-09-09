@@ -65,9 +65,21 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         DEBUG_LOG("Load INT: %ld", mrb->regs[a]);
         NEXT;
       }
+      CASE(OP_LOADNIL, B) {
+        mrb->regs[a] = MRB_NIL;
+        DEBUG_LOG("r[%d] = nil", a);
+        NEXT;
+      }
       CASE(OP_LOADSELF, B) {
         mrb->regs[a] = mrb->regs[0];
         DEBUG_LOG("r[%d] = self %ld", a, mrb->regs[a]);
+        NEXT;
+      }
+      CASE(OP_LOADT, B) goto L_LOADF;
+      CASE(OP_LOADF, B) {
+      L_LOADF:
+        mrb->regs[a] = insn == OP_LOADT ? MRB_TRUE : MRB_FALSE;
+        DEBUG_LOG("r[%d] = %s", a, insn == OP_LOADT ? "true" : "false");
         NEXT;
       }
       CASE(OP_JMP, S) {
