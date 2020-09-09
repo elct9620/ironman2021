@@ -137,6 +137,26 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         DEBUG_LOG("r[%d] = r[%d] + %d", a, a, b);
         NEXT;
       }
+      CASE(OP_EQ, B) {
+        mrb->regs[a] = mrb->regs[a] == mrb->regs[a + 1] ? MRB_TRUE : MRB_FALSE;
+        DEBUG_LOG("r[%d] = r[%d] == r[%d+1]", a, a, a);
+        NEXT;
+      }
+      CASE(OP_LT, B) {
+        mrb->regs[a] = mrb->regs[a] < mrb->regs[a + 1] ? MRB_TRUE : MRB_FALSE;
+        DEBUG_LOG("r[%d] = r[%d] < r[%d+1]", a, a, a);
+        NEXT;
+      }
+      CASE(OP_LE, B) {
+        mrb->regs[a] = mrb->regs[a] <= mrb->regs[a + 1] ? MRB_TRUE : MRB_FALSE;
+        DEBUG_LOG("r[%d] = r[%d] <= r[%d+1]", a, a, a);
+        NEXT;
+      }
+      CASE(OP_GT, B) {
+        mrb->regs[a] = mrb->regs[a] > mrb->regs[a + 1] ? MRB_TRUE : MRB_FALSE;
+        DEBUG_LOG("r[%d] = r[%d] > r[%d+1]", a, a, a);
+        NEXT;
+      }
       CASE(OP_GE, B) {
         mrb->regs[a] = mrb->regs[a] >= mrb->regs[a + 1] ? MRB_TRUE : MRB_FALSE;
         DEBUG_LOG("r[%d] = r[%d] >= r[%d+1]", a, a, a);

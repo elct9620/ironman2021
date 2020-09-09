@@ -68,7 +68,11 @@ enum {
   OP_BREAK,
   OP_ADD = 59,
   OP_ADDI,
-  OP_GE = 69,
+  OP_EQ = 65,
+  OP_LT,
+  OP_LE,
+  OP_GT,
+  OP_GE,
   OP_STOP = 103,
 };
 
