@@ -101,7 +101,7 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
           DEBUG_LOG("jmp %d if !r[%d] == %p", b, a, (void*)&mrb->stack[a]);
         }
 
-        if ((insn == OP_JMPIF) == (!(IS_NIL_VALUE(mrb->stack[a])))) {
+        if ((insn == OP_JMPIF) == (!(IS_FALSE_VALUE(mrb->stack[a])))) {
           p = porg + b;
         }
         NEXT;
@@ -205,9 +205,6 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         int len = PEEK_B(lit - 1);
         char* buf = malloc(len + 1);
         memcpy(buf, lit, len);
-        if(mrb->stack[a].value.p) {
-          free(mrb->stack[a].value.p);
-        }
         mrb->stack[a].tt = MRB_TT_STRING;
         mrb->stack[a].value.p = (void*)buf;
         DEBUG_LOG("r[%d] = str_dup(lit[%d] %s)", a, b, (const char*)mrb->stack[a].value.p);
@@ -217,6 +214,11 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         DEBUG_LOG("STOP");
         return 0;
       }
+      CASE(OP_LOADI16, BS) {
+        SET_INT_VALUE(mrb->stack[a], (int)(int16_t)b);
+        DEBUG_LOG("r[%d] = %d", a, (int)(int16_t)b);
+        NEXT;
+      }
       default:
         DEBUG_LOG("Unsupport OP Code: %d", insn);
         mrb->exc = 1;
@@ -225,13 +227,6 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
     if (mrb->exc) break;
   }
 
-  for(int i = 0; i < irep->nregs; i++) {
-    if(mrb->stack[i].value.p) {
-      free(mrb->stack[i].value.p);
-    }
-  }
-
-  free(mrb->stack);
   free(irep);
 
   return 0;

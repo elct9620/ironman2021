@@ -26,6 +26,11 @@ void mrb_puts(mrb_state* mrb, mrb_value self) {
   }
 }
 
+void mrb_sleep(mrb_state* mrb, mrb_value self) {
+  mrb_value* argv = mrb_get_argv(mrb);
+  delay(argv[0].value.i);
+}
+
 void setup() {
   Serial.begin(9600);
 
@@ -36,11 +41,13 @@ void setup() {
   mrb = mrb_open();
   // Define Print
   mrb_define_method(mrb, "puts", mrb_puts);
+  mrb_define_method(mrb, "sleep", mrb_sleep);
 
-  // mrb_close(mrb);
+  mrb_run(mrb, app);
+  mrb_close(mrb);
 }
 
 void loop() {
-  mrb_run(mrb, app);
+  Serial.println("Looping...");
   delay(5000);
 }

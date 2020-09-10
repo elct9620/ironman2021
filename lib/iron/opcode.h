@@ -76,6 +76,7 @@ enum {
   OP_STRING = 79,
   OP_STRCAT,
   OP_STOP = 103,
+  OP_LOADI16 = 104,
 };
 
 #endif
