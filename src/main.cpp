@@ -17,9 +17,12 @@ void mrb_puts(mrb_state* mrb, mrb_value self) {
 
   tft.fillScreen(TFT_BLACK);
   for(int i = 0; i < argc; i++) {
-    sprintf(num, "%d", argv[i].value.i);
-    tft.drawString(num, 8, i * 16 + 8, 2);
-    Serial.println(argv[i].value.i);
+    if (argv[i].tt == MRB_TT_STRING) {
+      tft.drawString((const char*)argv[i].value.p, 8, i * 16 + 8, 1);
+    } else {
+      sprintf(num, "%d", argv[i].value.i);
+      tft.drawString(num, 8, i * 16 + 8, 1);
+    }
   }
 }
 

@@ -26,6 +26,13 @@ typedef struct mrb_value {
 
 #define SET_NIL_VALUE(r) SET_VALUE(r, MRB_TT_FALSE, value.i, 0)
 #define SET_INT_VALUE(r, n) SET_VALUE(r, MRB_TT_FIXNUM, value.i, (n))
+#define SET_FALSE_VALUE(r) SET_VALUE(r, MRB_TT_FALSE, value.i, 1)
+#define SET_TRUE_VALUE(r) SET_VALUE(r, MRB_TT_TRUE, value.i, 1)
+
+#define IS_NIL_VALUE(r) (r.tt == MRB_TT_FALSE && r.value.i == 0)
+
+#define mrb_fixnum(o) (o).value.i
+#define mrb_int(o) mrb_fixnum(o)
 
 #define MRB_NIL 0x80000000 // nil for ruby
 #define MRB_TRUE 1

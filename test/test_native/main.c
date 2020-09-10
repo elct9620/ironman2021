@@ -10,7 +10,11 @@ void mrb_puts(mrb_state* mrb, mrb_value self) {
   mrb_value* argv = mrb_get_argv(mrb);
 
   for(int i = 0; i < argc; i++) {
-    printf("%d\n", argv[i].value.i);
+    if (argv[i].tt == MRB_TT_STRING) {
+      printf("%s\n", (const char*)argv[i].value.p);
+    } else {
+      printf("%d\n", (int)argv[i].value.i);
+    }
   }
 }
 

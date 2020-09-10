@@ -26,6 +26,7 @@ typedef struct mrb_state {
   struct kh_mt_s *mt;
   // TODO: Move to mrb_context
   mrb_callinfo* ci;
+  mrb_value* stack;
 } mrb_state;
 
 
