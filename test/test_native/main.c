@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unity.h>
 
 #include "app.h"
 #include "iron.h"
@@ -13,11 +14,16 @@ void mrb_puts(mrb_state* mrb, mrb_value self) {
   }
 }
 
-int main() {
+void test_mrb_run(void) {
   mrb_state* mrb = mrb_open();
   mrb_define_method(mrb, "puts", mrb_puts);
   mrb_run(mrb, app);
   mrb_close(mrb);
+}
 
+int main(int argc, char **argv) {
+  UNITY_BEGIN();
+  RUN_TEST(test_mrb_run);
+  UNITY_END();
   return 0;
 }
