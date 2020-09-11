@@ -18,9 +18,14 @@ void mrb_puts(mrb_state* mrb, mrb_value self) {
   }
 }
 
+void mrb_mod(mrb_state* mrb, mrb_value self) {
+  printf("MOD = %d\n", self.value.i);
+}
+
 void test_mrb_run(void) {
   mrb_state* mrb = mrb_open();
   mrb_define_method(mrb, "puts", mrb_puts);
+  mrb_define_method(mrb, "%", mrb_mod);
   mrb_run(mrb, app);
   mrb_close(mrb);
 }
