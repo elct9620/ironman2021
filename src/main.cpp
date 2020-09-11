@@ -9,7 +9,7 @@
 TFT_eSPI tft = TFT_eSPI();
 mrb_state* mrb;
 
-void mrb_puts(mrb_state* mrb, mrb_value self) {
+mrb_value mrb_puts(mrb_state* mrb, mrb_value self) {
   int argc = mrb_get_argc(mrb);
   mrb_value* argv = mrb_get_argv(mrb);
 
@@ -24,18 +24,24 @@ void mrb_puts(mrb_state* mrb, mrb_value self) {
       tft.drawString(num, 8, i * 16 + 8, 1);
     }
   }
+
+  return argv[0];
 }
 
-void mrb_sleep(mrb_state* mrb, mrb_value self) {
+mrb_value mrb_sleep(mrb_state* mrb, mrb_value self) {
   mrb_value* argv = mrb_get_argv(mrb);
   delay(argv[0].value.i);
+
+  return self;
 }
 
-void mrb_clear(mrb_state* mrb, mrb_value self) {
+mrb_value mrb_clear(mrb_state* mrb, mrb_value self) {
   tft.fillScreen(TFT_BLACK);
+
+  return self;
 }
 
-void mrb_draw_text(mrb_state* mrb, mrb_value self) {
+mrb_value mrb_draw_text(mrb_state* mrb, mrb_value self) {
   mrb_value* argv = mrb_get_argv(mrb);
 
   int x = mrb_fixnum(argv[1]);
@@ -43,6 +49,15 @@ void mrb_draw_text(mrb_state* mrb, mrb_value self) {
   const char* text = (const char*)argv[0].value.p;
 
   tft.drawString(text, x, y, 1);
+
+  return self;
+}
+
+mrb_value mrb_mod(mrb_state* mrb, mrb_value self) {
+  mrb_value* argv = mrb_get_argv(mrb);
+  printf("MOD = %d\n", self.value.i);
+
+  return mrb_fixnum_value(mrb_fixnum(self) % mrb_fixnum(argv[0]));
 }
 
 void setup() {
@@ -58,6 +73,7 @@ void setup() {
   mrb_define_method(mrb, "sleep", mrb_sleep);
   mrb_define_method(mrb, "clear", mrb_clear);
   mrb_define_method(mrb, "draw_text", mrb_draw_text);
+  mrb_define_method(mrb, "%", mrb_mod);
 
   mrb_run(mrb, app);
   mrb_close(mrb);

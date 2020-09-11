@@ -6,5 +6,5 @@ while true
   draw_text "Hello World", i, 8
   i += 2
   sleep 100
-  i = 0 if i == 128
+  i = i % 128
 end
