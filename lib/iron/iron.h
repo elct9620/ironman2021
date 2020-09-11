@@ -16,8 +16,6 @@ typedef struct mrb_callinfo {
   mrb_value* argv;
 } mrb_callinfo;
 
-typedef void (*debug_fn)(const char* msg);
-
 typedef struct mrb_state {
   int exc; /* exception */
   intptr_t* regs;
@@ -33,7 +31,7 @@ typedef struct mrb_state {
 IRON_API mrb_state* mrb_open(void);
 IRON_API void mrb_close(mrb_state* mrb);
 
-typedef void (*mrb_func_t)(mrb_state* mrb, mrb_value value);
+typedef mrb_value (*mrb_func_t)(mrb_state* mrb, mrb_value value);
 
 KHASH_MAP_INIT_STR(mt, mrb_func_t)
 IRON_API void mrb_define_method(mrb_state* mrb, const char* name, mrb_func_t func);

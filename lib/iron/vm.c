@@ -128,9 +128,7 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
             .argv = argv
           };
           mrb->ci = &ci;
-
-          func(mrb, self);
-
+          mrb->stack[a] = func(mrb, self);
           mrb->ci = NULL;
         }
         NEXT;

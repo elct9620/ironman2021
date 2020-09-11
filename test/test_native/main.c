@@ -5,7 +5,7 @@
 #include "iron.h"
 #include "vm.h"
 
-void mrb_puts(mrb_state* mrb, mrb_value self) {
+mrb_value mrb_puts(mrb_state* mrb, mrb_value self) {
   int argc = mrb_get_argc(mrb);
   mrb_value* argv = mrb_get_argv(mrb);
 
@@ -16,10 +16,15 @@ void mrb_puts(mrb_state* mrb, mrb_value self) {
       printf("%d\n", (int)argv[i].value.i);
     }
   }
+
+  return argv[0];
 }
 
-void mrb_mod(mrb_state* mrb, mrb_value self) {
+mrb_value mrb_mod(mrb_state* mrb, mrb_value self) {
+  mrb_value* argv = mrb_get_argv(mrb);
   printf("MOD = %d\n", self.value.i);
+
+  return mrb_fixnum_value(mrb_fixnum(self) % mrb_fixnum(argv[0]));
 }
 
 void test_mrb_run(void) {
