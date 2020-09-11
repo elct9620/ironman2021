@@ -76,7 +76,7 @@ int mrb_exec(mrb_state* mrb, const uint8_t* data) {
         DEBUG_LOG("r[%d] = self %p", a, (void *)&mrb->stack[a]);
         NEXT;
       }
-      CASE(OP_LOADT, B)
+      CASE(OP_LOADT, B) goto L_LOADF;
       CASE(OP_LOADF, B) {
       L_LOADF:
         if(insn == OP_LOADT) {

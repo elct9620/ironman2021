@@ -31,6 +31,20 @@ void mrb_sleep(mrb_state* mrb, mrb_value self) {
   delay(argv[0].value.i);
 }
 
+void mrb_clear(mrb_state* mrb, mrb_value self) {
+  tft.fillScreen(TFT_BLACK);
+}
+
+void mrb_draw_text(mrb_state* mrb, mrb_value self) {
+  mrb_value* argv = mrb_get_argv(mrb);
+
+  int x = mrb_fixnum(argv[1]);
+  int y = mrb_fixnum(argv[2]);
+  const char* text = (const char*)argv[0].value.p;
+
+  tft.drawString(text, x, y, 1);
+}
+
 void setup() {
   Serial.begin(9600);
 
@@ -42,6 +56,8 @@ void setup() {
   // Define Print
   mrb_define_method(mrb, "puts", mrb_puts);
   mrb_define_method(mrb, "sleep", mrb_sleep);
+  mrb_define_method(mrb, "clear", mrb_clear);
+  mrb_define_method(mrb, "draw_text", mrb_draw_text);
 
   mrb_run(mrb, app);
   mrb_close(mrb);
